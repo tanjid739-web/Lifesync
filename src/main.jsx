@@ -8,11 +8,14 @@ const challenges = [
   { name: "Plank", duration: 30 },
 ];
 
+const prayers = ["ফজর", "যোহর", "আসর", "মাগরিব", "এশা"];
+
 function App() {
   const [index, setIndex] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [running, setRunning] = useState(false);
   const [completed, setCompleted] = useState(0);
+  const [prayerDone, setPrayerDone] = useState([]);
 
   const workout = challenges[index];
 
@@ -39,6 +42,14 @@ function App() {
     setIndex((i) => (i + 1) % challenges.length);
   };
 
+  const togglePrayer = (prayer) => {
+    setPrayerDone((list) =>
+      list.includes(prayer)
+        ? list.filter((p) => p !== prayer)
+        : [...list, prayer]
+    );
+  };
+
   return (
     <div
       style={{
@@ -50,7 +61,7 @@ function App() {
       }}
     >
       <h1>LifeSync 💪</h1>
-      <p>Daily Home Workout</p>
+      <p>Daily Home Workout & Namaz</p>
 
       <div
         style={{
@@ -58,26 +69,70 @@ function App() {
           padding: 20,
           borderRadius: 16,
           maxWidth: 500,
-          margin: "30px auto",
+          margin: "20px auto",
         }}
       >
         <h2>{workout.name}</h2>
 
         <p>
-          Time: {seconds}s / {workout.duration}s
+          Time: {seconds} / {workout.duration}s
         </p>
 
         <button onClick={() => setRunning(!running)}>
           {running ? "Pause" : "Start"}
         </button>
 
-        <button onClick={nextWorkout} style={{ marginLeft: 10 }}>
+        <button
+          onClick={nextWorkout}
+          style={{ marginLeft: 10 }}
+        >
           Next
         </button>
 
         <hr />
 
         <p>Completed workouts: {completed}</p>
+      </div>
+
+      <div
+        style={{
+          background: "#1f2937",
+          padding: 20,
+          borderRadius: 16,
+          maxWidth: 500,
+          margin: "20px auto",
+        }}
+      >
+        <h2>🕌 নামাজ</h2>
+
+        <p>
+          আজ আদায় হয়েছে: {prayerDone.length} / {prayers.length}
+        </p>
+
+        {prayers.map((prayer) => {
+          const done = prayerDone.includes(prayer);
+
+          return (
+            <button
+              key={prayer}
+              onClick={() => togglePrayer(prayer)}
+              style={{
+                display: "block",
+                width: "100%",
+                margin: "10px 0",
+                padding: 14,
+                borderRadius: 10,
+                border: "none",
+                background: done ? "#16a34a" : "#374151",
+                color: "white",
+                fontSize: 16,
+              }}
+            >
+              {done ? "✅ " : "🕌 "}
+              {prayer} {done ? "- আদায় হয়েছে" : "- Done করুন"}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
